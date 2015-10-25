@@ -51,22 +51,24 @@ class Sudoku
   	! @board.flatten.include?('-')
   end
 
-  def valid?(array)
+  def valid_subsection?(array)
   	#need methods that create a single array for a row, column, and box
   	checker = array.uniq
   	array == checker
   end
 
-  def legalize
+  def legal_board?
   	@board.each do |row|
-  		valid?(row)
+  		valid_subsection?(row)
   	end
 
   	@board.transpose.each do |col|
-  		valid?(col)
+  		valid_subsection?(col)
   	end
 
-  	
+	organize_board_according_to_3x3_squares.each do |square|
+		valid_subsection?(square)
+	end  	
   end
 
 #returns array where each element is an array of 3x3 squares.
@@ -89,21 +91,24 @@ class Sudoku
   	board_in_3_by_3_squares
   end
 
-  def solve
+  def solve(board = @board)
+  	@board = board
   	#base cases
-  	#iterate through each row, column and box and pass to valid
-
+  	return false if !legal_board?
   	return to_s if  won?
   	possibilities_each_cell = get_possibilities_each_cell
 
   	possibilities_each_cell.each do |coordinate, possible_answers|
   		row_index, col_index = coordinate[0], coordinate[1]
 
+  		possible_answers.each do |possible_answer|
+  			@board[row_index][col_index] = possible_answer
+  		end
   	end
+
+  	solve(@board)
   end
 
-  def board
-  end
 
   # Returns a string representing the current state of the board
   def to_s
@@ -114,4 +119,4 @@ end
 board = Sudoku.new('1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--
 ')
 
-board.get_possibilities_each_cell
+board.solve('1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--')
