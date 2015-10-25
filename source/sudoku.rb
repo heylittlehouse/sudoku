@@ -1,35 +1,34 @@
 class Sudoku
   def initialize(board_string)
-  	@board = board_string.scan(/.{9}/)
+  	#turns board into array of arrays
+  	@board = board_string.scan(/.{9}/).map{|string| string.split("")}
   	p @board
   end
 
+#returns hash of missing numbers for each row.
   def missing_nos_row
   	found_nos = {'-'=>0, '1'=>0, '2'=>0, '3'=>0, '4'=>0, '5'=>0, '6'=>0, '7'=>0, '8'=>0, '9'=>0}
-
   	missing_nos_each_row = {}
-
   	row_index = 0
 
   	@board.each do |row|
-
-  		row.each_char do |cell|
+  		row.each do |cell|
   			found_nos[cell] += 1
   		end
 
   		missing_nos_one_row = found_nos.select{|num, occurrance| occurrance==0}.keys
-
   		missing_nos_each_row[row_index] = missing_nos_one_row
 
   		found_nos.each{|k, v| found_nos[k]=0}
   		row_index += 1
   	end
 
-  	p missing_nos_each_row
+  	missing_nos_each_row
   end
 
   def missing_nos_col
-
+  	@board = @board.transpose
+  	missing_nos_row
   end
 
   def possibilities_each_cell
