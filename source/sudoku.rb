@@ -24,9 +24,14 @@ class Sudoku
     solved_board.flatten.include?("-")
   end
 
+  def legal_board?
+    legal_rows? && legal_cols? && legal boxes? ? true : false
+  end
+
   def solve
     return false if !legal_board?
     return to_s(solved_board) if solved?
+
 
   end
 
@@ -47,10 +52,29 @@ private
   def get_cell_possibilities(coord)
     row = solved_board[coord[0]]
     col = column_board[coord[1]]
-
+    #could be further narrowed down by checking box, but i'll leave that
+    #for legal_board? method called by solve to check.
     impossibilities = (row + col).uniq
     %w[- 1 2 3 4 5 6 7 8 9].reject{|num| num if impossibilities.include?(num)}
   end
+
+  def legal_rows?(check_board = @solved_board)
+    check_board.map{|row| check(row)}.include?(false) ? false : true
+  end
+
+  def check(subsection)
+    checker = subsection.uniq
+    subsection == checker
+  end
+
+  def legal_cols?
+    legal_rows?(column_board)
+  end
+
+  def legal_boxes?
+    legal_rows?(three_by_three_board)
+  end
+
   #the following methods arrange the board so that each nested array will represent
   #What they are titled so I can easily access these later
 
