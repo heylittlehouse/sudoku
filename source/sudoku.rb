@@ -25,15 +25,35 @@ class Sudoku
   end
 
   def solve
-    # return false if !legal_board?
+    return false if !legal_board?
     return to_s(solved_board) if solved?
 
   end
 
-  private
 
-#the following two methods arrange the board so that each nested array will represent
-#What they are titled so I can easily access these later
+private
+
+  def find_all_possibilities
+    all_possibilities = {}
+    solved_board.each_with_index do |row, row_index|
+      row.each_with_index do |col, col_index|
+        coord = [row_index, col_index]
+        all_possibilities[coord] = get_cell_possibilities(coord) if col == "-"
+      end
+    end
+    puts all_possibilities
+  end
+
+  def get_cell_possibilities(coord)
+    row = solved_board[coord[0]]
+    col = column_board[coord[1]]
+
+    impossibilities = (row + col).uniq
+    %w[- 1 2 3 4 5 6 7 8 9].reject{|num| num if impossibilities.include?(num)}
+  end
+  #the following methods arrange the board so that each nested array will represent
+  #What they are titled so I can easily access these later
+
   def column_board
     solved_board.transpose
   end
@@ -70,3 +90,6 @@ class Sudoku
   end
 
 end
+
+s = Sudoku.new("1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--")
+s.find_all_possibilities
