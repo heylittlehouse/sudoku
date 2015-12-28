@@ -21,7 +21,7 @@ class Sudoku
   end
 
   def solved?
-    solved_board.flatten.include?("-")
+    !solved_board.flatten.include?("-")
   end
 
   def legal_board?
