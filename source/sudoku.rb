@@ -25,14 +25,16 @@ class Sudoku
   end
 
   def legal_board?
+    #makes sure there are no duplicates in each row/col/box
     legal_rows? && legal_cols? && legal boxes? ? true : false
   end
 
   def solve
     return false if !legal_board?
     return to_s(solved_board) if solved?
+    possibilities = find_all_possibilities
 
-
+    possibilities.each
   end
 
 
@@ -52,8 +54,8 @@ private
   def get_cell_possibilities(coord)
     row = solved_board[coord[0]]
     col = column_board[coord[1]]
-    #could be further narrowed down by checking box, but i'll leave that
-    #for legal_board? method called by solve to check.
+    #could be further narrowed down by checking box,
+    #but this'll do.
     impossibilities = (row + col).uniq
     %w[- 1 2 3 4 5 6 7 8 9].reject{|num| num if impossibilities.include?(num)}
   end
@@ -63,8 +65,9 @@ private
   end
 
   def check(subsection)
-    checker = subsection.uniq
-    subsection == checker
+    nums_in_sub = subsection.reject{|char| char == '-'}
+    checker = nums_in_sub.uniq
+    nums_in_sub == checker
   end
 
   def legal_cols?
