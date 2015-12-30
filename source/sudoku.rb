@@ -9,7 +9,7 @@ class Sudoku
 
   def initialize(board_string)
     @board = board_string.split("").each_slice(9).to_a
-    @solved_board = @board
+    @solved_board = board.dup
     to_s(board)
   end
 
@@ -26,29 +26,41 @@ class Sudoku
 
   def legal_board?
     #makes sure there are no duplicates in each row/col/box
-    legal_rows? && legal_cols? && legal boxes? ? true : false
+    legal_rows? && legal_cols? && legal_boxes? ? true : false
   end
 
-  def solve
-    return false if !legal_board?
+  def solve(this_board = @solved_board)
+    solved_board = this_board
+    return if !legal_board?
+    return if !possibilities_valid?
     return to_s(solved_board) if solved?
-    possibilities = find_all_possibilities
 
-    possibilities.each
+    possibilities_hash = find_all_possibilities
+
+    solved_board.each_with_index do |row, row_index|
+      row.each_with_index do |cell, col_index|
+        if possibilities_hash.keys.any?{|coord| coord == [row_index, col_index]}
+          solved_board[row_index][col_index] = possibilities_hash[[row_index, col_index]].shift
+          solve(solved_board)
+        end
+      end
+    end
+    puts "Sorry, that's impossible"
   end
 
-
-private
+  def possibilities_valid?
+    !find_all_possibilities.values.include?([])
+  end
 
   def find_all_possibilities
     all_possibilities = {}
     solved_board.each_with_index do |row, row_index|
-      row.each_with_index do |col, col_index|
+      row.each_with_index do |cell, col_index|
         coord = [row_index, col_index]
-        all_possibilities[coord] = get_cell_possibilities(coord) if col == "-"
+        all_possibilities[coord] = get_cell_possibilities(coord) if cell == "-"
       end
     end
-    puts all_possibilities
+    all_possibilities
   end
 
   def get_cell_possibilities(coord)
@@ -117,6 +129,3 @@ private
   end
 
 end
-
-s = Sudoku.new("1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---3-43--2-5-16--3-89--")
-s.find_all_possibilities
