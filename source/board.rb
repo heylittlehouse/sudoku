@@ -22,6 +22,12 @@ class Board
     board.transpose
   end
 
+  def string_index_to_coord(string_index)
+    row_index = string_index / 9
+    col_index = string_index % 9
+    [row_index, col_index]
+  end
+
   private
 
   def legal_rows?(check_board = @board)

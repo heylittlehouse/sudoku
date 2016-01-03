@@ -24,7 +24,7 @@ class Sudoku
   end
 
   def solve
-    #TODO: fill in solve
+
     puts "Sorry, that's impossible"
   end
 
