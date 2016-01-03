@@ -16,6 +16,5 @@ require_relative 'sudoku'
 File.readlines('sudoku_puzzles.txt').each do |line|
   board_string = line.chomp
   game = Sudoku.new(board_string)
-  game.solve
 end
 
