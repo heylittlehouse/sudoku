@@ -3,11 +3,15 @@ class Possibilities
 
   def initialize(board)
     @next_cell_string_index = get_next_cell_index(board)
-    @possbilities = get_possibilities_next_cell(board)
+    #I did this so that the program doesn't get tripped up
+    #when it gets to the end of a board because it tries to
+    #find the index of the non-existent character
+    # *after* the last character
+    @possibilities = next_cell_string_index ? get_possibilities_next_cell(board) : nil
   end
 
-  def valid?
-    !possibilities == []
+  def empty?
+    possibilities == []
   end
 
   private

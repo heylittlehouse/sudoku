@@ -1,13 +1,14 @@
 require_relative 'board'
-require_relative 'possbilities'
+require_relative 'possibilities'
+require 'pry'
 
 class Sudoku
-  attr_accessor :solved_board
+  attr_accessor :solved_board, :possibilities
 
   def initialize(board_string)
     @solved_board = Board.new(board_string)
-    @possbilities = Possibilities.new(solved_board.board_string)
-    to_s(board)
+    @possibilities = Possibilities.new(solved_board)
+    # to_s(solved_board.board)
     solve
   end
 
@@ -24,8 +25,17 @@ class Sudoku
   end
 
   def solve
+    return false if !solved_board.legal_board?
+    return to_s_solution(solved_board.board) if solved_board.solved?
+    return false if possibilities.empty?
 
-    puts "Sorry, that's impossible"
+    possibilities.possibilities.each do |possibility|
+      new_string = solved_board.board_string.dup
+      new_string[possibilities.next_cell_string_index] = possibility
+      Sudoku.new(new_string)
+    end
+
+    return false
   end
 
 end
