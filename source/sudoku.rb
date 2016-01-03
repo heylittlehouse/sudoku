@@ -1,3 +1,6 @@
+require_relative 'board'
+require_relative 'possbilities'
+
 class Sudoku
   attr_accessor :solved_board
 
